@@ -1,9 +1,12 @@
 import { getAnimals } from './db';
 
 export default async function handler(req, res) {
-
-    let sqliteObj = await getAnimals();
-    //console.log("getAnimalsCards: ", sqliteObj);
-    res.setHeader('Content-Type', 'application/json');
-    res.status(200).end(JSON.stringify(sqliteObj));
+    try {
+        let animals = await getAnimals();
+        res.setHeader('Content-Type', 'application/json');
+        res.status(200).json(animals);
+    } catch (error) {
+        console.error('Ошибка при получении данных о животных:', error);
+        res.status(500).json({ error: 'Failed to retrieve animal data' });
+    }
 }

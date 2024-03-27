@@ -1,5 +1,7 @@
 import Head from "next/head";
 import React from "react";
+import { Button } from 'antd';
+import Link from 'next/link';
 
 const UploadPage = () => {
   
@@ -10,7 +12,7 @@ const UploadPage = () => {
   const uploadToServer = async (event) => {
     const body = new FormData();
     body.append("file", image);
-    const response = await fetch("https://next1-cyan.vercel.app/api/upload", {
+    const response = await fetch("/api/upload", {
       method: "POST",
       body
     });
@@ -24,6 +26,7 @@ const UploadPage = () => {
     }
   };
   
+
   function handle(animals){
     console.log(animals)
     //animals=Object.keys(animals);
@@ -34,7 +37,7 @@ const UploadPage = () => {
   }
   
   React.useEffect(()=>{
-    fetch('https://next1-cyan.vercel.app/api/getAnimals').then(data=>data.json()).then(data=>handle(data))
+    fetch('api/getAnimals').then(data=>data.json()).then(data=>handle(data))
   },[]);
   
   
@@ -52,10 +55,13 @@ const UploadPage = () => {
       <h2>Upload file</h2>
       <p>Выберите тип изображения </p>
       <select>
-        {animals.map((animal,i)=><Animal name={animal} key={i}/>)}
+        {animals.map((animal,i)=><Animal name={animal} key={i} />)}
       </select>
         <input type="file" name="myImage" onChange={uploadToClient} /> <br />
         <button onClick={uploadToServer}>Send</button>
+        <Link href="/">
+          <Button>Перейти на главную</Button>
+        </Link>
     </>
   );
 };

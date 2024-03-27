@@ -6,13 +6,13 @@ export async function openDB() {
     filename: './data.sqlite',
     driver: sqlite3.Database,
   });
-  await db.exec('CREATE TABLE IF NOT EXISTS animals (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, lossPlace TEXT, photo TEXT)');
+  await db.exec('CREATE TABLE IF NOT EXISTS animals (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, age TEXT, breed TEXT)');
   return db;
 }
 
-export async function insertAnimal(name, lossPlace, photo) {
+export async function insertAnimal(name, age, breed) {
   const db = await openDB();
-  await db.run('INSERT INTO animals (name, lossPlace, photo) VALUES (?, ?, ?)', name, lossPlace, photo);
+  await db.run('INSERT INTO animals (name, age, breed) VALUES (?, ?, ?)', name, age, breed);
 }
 
 export async function getAnimals() {

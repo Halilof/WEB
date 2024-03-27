@@ -1,21 +1,28 @@
-import {Button, List, Modal, Typography, Image, Text, Space} from "antd";
-import {useEffect, useState} from "react";
+import { Button, List, Typography, Space } from "antd";
+import { useEffect, useState } from "react";
 import CreateAnimalCard from "./createAnimalCard";
 import styles from '../styles/Home.module.css' 
 
-const AnimalCardPage = () => {
+const { Text } = Typography;
 
-    const [animalCardModal, setAnimalCardModal] = useState(false)
+const AnimalCardPage = () => {
+    const [animalCardModal, setAnimalCardModal] = useState(false);
     const [animals, setAnimals] = useState([]);
 
-    const { Text} = Typography;
-
     const onClick = () => {
-        console.log('hello')
-        setAnimalCardModal(true)
+        setAnimalCardModal(true);
     }
 
     useEffect(() => {
+        fetchAnimals(); // Загружаем данные о животных при монтировании компонента
+    }, []);
+
+    useEffect(() => {
+        const interval = setInterval(fetchAnimals, 5000); // Обновляем данные каждые 5 секунд
+        return () => clearInterval(interval); // Очищаем интервал при размонтировании компонента
+    }, []);
+
+    const fetchAnimals = () => {
         fetch('/api/getAnimalsCards', {
             method: 'GET',
             headers: {
@@ -29,63 +36,43 @@ const AnimalCardPage = () => {
             return response.json(); // Преобразуем ответ в JSON
         })
         .then(data => {
-            //console.log('Успешный ответ от сервера:', data);
-            // Устанавливаем полученные данные в состояние
             setAnimals(data);
         })
         .catch(error => {
             console.error('Ошибка:', error);
-            // Обработка ошибок
         });
-
-        console.log(document.URL)
-
-    }, [animals]);
+    };
 
     return (
         <>
             <Button onClick={onClick}>Create</Button>
             <CreateAnimalCard animalCard={animalCardModal} setAnimalCard={setAnimalCardModal} setAnimals={setAnimals}/>
 
-            {/* <List
-                bordered
-                style={"color: 'white'"}
-                dataSource={animals} // Устанавливаем данные из состояния в качестве dataSource
-                renderItem={(item) => (
-                    <List.Item>
-                        <Typography.Text mark>[ID]</Typography.Text> {item.id}<br/>
-                        <Typography.Text mark>[Name]</Typography.Text> {item.name}<br/>
-                        <Typography.Text mark>[Loss Place]</Typography.Text> {item.lossPlace}<br/>
-                        <Image width={200} height={200} src={item.photo} />
-                    </List.Item>
-                )}
-            /> */}
-
             <List
-            className={styles.container}
-            bordered
-                style={{color: 'white'}}
+                className={styles.container}
+                bordered
+                style={{ color: 'white' }}
                 grid={{
-                gutter: 16,
-                xs: 1,
-                sm: 2,
-                md: 4,
-                lg: 4,
-                xl: 6,
-                xxl: 3,
+                    gutter: 16,
+                    xs: 1,
+                    sm: 2,
+                    md: 4,
+                    lg: 4,
+                    xl: 6,
+                    xxl: 3,
                 }}
                 dataSource={animals}
                 renderItem={(item) => (
                     <List.Item>
-                    <Typography.Text mark>[ID]</Typography.Text> <Text id="cardText">{item.id}</Text><br/>
-                    <Typography.Text mark>[Name]</Typography.Text> {item.name}<br/>
-                    <Typography.Text mark>[Loss Place]</Typography.Text> {item.lossPlace}<br/>
-                    <Image width={200} height={200} src={item.photo} />
-                </List.Item>
+                        <Typography.Text mark>[ID]</Typography.Text> <Text id="cardText">{item.id}</Text><br/>
+                        <Typography.Text mark>[Name]</Typography.Text> {item.name}<br/>
+                        <Typography.Text mark>[Age]</Typography.Text> {item.age}<br/>
+                        <Typography.Text mark>[Breed]</Typography.Text> {item.breed}
+                    </List.Item>
                 )}
             />
         </>
     )
 }
 
-export default AnimalCardPage
+export default AnimalCardPage;
